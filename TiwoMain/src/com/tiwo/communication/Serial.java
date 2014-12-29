@@ -14,12 +14,20 @@ import java.util.Enumeration;
 
 public class Serial {
 
-	public ArrayList<String> ports;
+	private ArrayList<String> ports;
 	private SerialPort serialPort;
+	private static Serial instance;
+	private boolean isConnected;
 	
-	public Serial(){
+	public static Serial getInstance(){
+		if(instance == null) instance = new Serial();
+		return instance;
+	}
+	
+	private Serial(){
 		ports = new ArrayList<String>();
-		
+		isConnected = false;
+
         @SuppressWarnings("rawtypes")
 		Enumeration portList = CommPortIdentifier.getPortIdentifiers();
         
@@ -38,13 +46,17 @@ public class Serial {
 	
     public void connect (String portName, int baudRate) throws Exception
     {
+    	if(isConnected) return;
         CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
-        if ( portIdentifier.isCurrentlyOwned() )
+        if (portIdentifier.isCurrentlyOwned())
         {
             System.out.println("Error: Port is currently in use");
         }
         else
         {
+        	// avoid multiple connections
+        	isConnected = true;
+   
             CommPort commPort = portIdentifier.open(this.getClass().getName(),2000);
             
             if ( commPort instanceof SerialPort )
@@ -52,14 +64,13 @@ public class Serial {
                 serialPort = (SerialPort) commPort;
                 serialPort.setSerialPortParams(baudRate,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
                 
-                InputStream in = serialPort.getInputStream();
-                OutputStream out = serialPort.getOutputStream();
-                                                           
+                // start reader thread and keep it
+                InputStream in = serialPort.getInputStream();                                        
                 (new Thread(new SerialReaderThread(in))).start();
-                (new Thread(new SerialWriterThread(out))).start();
-                
-                //out.write("Hello Arduino, I'm Java!".getBytes());
-
+              
+                // start writer thread (not used at the moment)
+                //OutputStream out = serialPort.getOutputStream();
+                //(new Thread(new SerialWriterThread(out))).start();
             }
             else
             {
@@ -79,5 +90,10 @@ public class Serial {
 		}
     }
 
+	public ArrayList<String> getPorts() {
+		return ports;
+	}
+
+    
 
 }

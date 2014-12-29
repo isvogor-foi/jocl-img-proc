@@ -11,6 +11,8 @@ public class SerialWriterThread implements Runnable {
 		this.out = out;
 	}
 
+	
+	// currently not in use, just sends "test" forever
 	public void run() {
 		try {
 			/*

@@ -2,7 +2,6 @@ package com.tiwo.main;
 
 import java.awt.EventQueue;
 
-import com.tiwo.communication.Serial;
 import com.tiwo.forms.MainForm;
 
 public class Main {
@@ -10,6 +9,7 @@ public class Main {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+				
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -21,17 +21,8 @@ public class Main {
 			}
 		});
 		
-		Serial sr = new Serial();
-		
-		try 
-		{
-			sr.connect(sr.ports.get(0), 9600);
-			//sr.sendMessage("Hello");
-		} 
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-		}
+		System.out.println("OS: " + System.getProperty("os.name"));
+
 	}
 
 }

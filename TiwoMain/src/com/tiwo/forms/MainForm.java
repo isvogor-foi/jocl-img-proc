@@ -1,5 +1,6 @@
 package com.tiwo.forms;
 
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,20 +12,18 @@ import javax.swing.JFrame;
 import com.tiwo.communication.Commands;
 import com.tiwo.communication.Commands.MOVEMENT;
 import com.tiwo.communication.Serial;
+import com.tiwo.keyboard.KeyDispatcher;
 
 public class MainForm {
 
 	public JFrame frame;
-	
 	private JButton btnSend;
 	private JComboBox<Commands.MOVEMENT> cmbCommand;
 	private JComboBox<Object> cmbPorts;
 	private JButton btnConnect;
-
+	private JButton btnEnableKeyboard;
+	private boolean listeningKeyEvents = false;
 	
-	/**
-	 * Create the application.
-	 */
 	public MainForm() {
 		initialize();
 	}
@@ -36,10 +35,9 @@ public class MainForm {
 		
 		// initialize frame
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(100, 100, 568, 405);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-		
+		frame.getContentPane().setLayout(null);		
 		
 		btnConnect = new JButton("Connect");
 		btnConnect.addActionListener(connectButtonAction);
@@ -58,13 +56,25 @@ public class MainForm {
 		cmbCommand.setModel(new DefaultComboBoxModel<>(Commands.MOVEMENT.values()));
 		cmbCommand.setEnabled(false);
 		
+		
+		btnEnableKeyboard = new JButton("Enable keyboard");
+		btnEnableKeyboard.setBounds(263, 45, 133, 22);
+		btnEnableKeyboard.addActionListener(keyboardEnableAction);
+		btnEnableKeyboard.setEnabled(false);
+		
 		// add widgets to the frame 
 		frame.getContentPane().add(btnSend);
 		frame.getContentPane().add(cmbCommand);
 		frame.getContentPane().add(cmbPorts);
 		frame.getContentPane().add(btnConnect);
+		frame.getContentPane().add(btnEnableKeyboard);
+
 	}
 	
+	/**
+	 * Action listeners
+	 */
+
 	ActionListener connectButtonAction = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -74,6 +84,7 @@ public class MainForm {
 				
 				btnSend.setEnabled(true);
 				cmbCommand.setEnabled(true);
+				btnEnableKeyboard.setEnabled(true);
 				
 			} catch (Exception exception) {
 				exception.printStackTrace();
@@ -94,6 +105,23 @@ public class MainForm {
 		}
 	};
 	
-
-	
+	ActionListener keyboardEnableAction = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			listeningKeyEvents = !listeningKeyEvents;
+			KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();;
+			KeyDispatcher keyDispatcher = null;
+			if(listeningKeyEvents){
+				keyDispatcher =  new KeyDispatcher();
+				manager.addKeyEventDispatcher( keyDispatcher );
+				btnEnableKeyboard.setText("Disable keyboard");
+			}
+			else{
+				if(manager != null || keyDispatcher != null) {
+					manager.removeKeyEventDispatcher(keyDispatcher);
+					btnEnableKeyboard.setText("Enable keyboard");					
+				}
+			}
+		}
+	};
 }

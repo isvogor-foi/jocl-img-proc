@@ -56,7 +56,6 @@ public class MainForm {
 		cmbCommand.setModel(new DefaultComboBoxModel<>(Commands.MOVEMENT.values()));
 		cmbCommand.setEnabled(false);
 		
-		
 		btnEnableKeyboard = new JButton("Enable keyboard");
 		btnEnableKeyboard.setBounds(263, 45, 133, 22);
 		btnEnableKeyboard.addActionListener(keyboardEnableAction);
@@ -114,11 +113,13 @@ public class MainForm {
 			if(listeningKeyEvents){
 				keyDispatcher =  new KeyDispatcher();
 				manager.addKeyEventDispatcher( keyDispatcher );
+				
 				btnEnableKeyboard.setText("Disable keyboard");
 			}
 			else{
 				if(manager != null || keyDispatcher != null) {
 					manager.removeKeyEventDispatcher(keyDispatcher);
+					
 					btnEnableKeyboard.setText("Enable keyboard");					
 				}
 			}

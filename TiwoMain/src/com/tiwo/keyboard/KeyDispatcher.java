@@ -10,8 +10,9 @@ import com.tiwo.communication.Serial;
 public class KeyDispatcher implements KeyEventDispatcher {
     public boolean dispatchKeyEvent(KeyEvent e) {
         if(e.getID() == KeyEvent.KEY_RELEASED)
-	    	System.out.println(e.getExtendedKeyCode());
+        	if(!e.isConsumed()){
         	try{
+        		System.out.println(e.getExtendedKeyCode());
 	        	switch(e.getExtendedKeyCode()){
 	        		case 38: // up key
 	        			Serial.getInstance().sendMessage(MOVEMENT.FORWARD.toString()); break;
@@ -27,6 +28,9 @@ public class KeyDispatcher implements KeyEventDispatcher {
         	} catch (Exception exception){
         		exception.printStackTrace();
         	}
+        	e.consume();
+        	return true;
+        }
         //Allow the event to be redispatched
         return false;
     }

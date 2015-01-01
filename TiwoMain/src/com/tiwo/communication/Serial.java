@@ -82,6 +82,7 @@ public class Serial {
     public void sendMessage(String message) throws IOException{
     	OutputStream out = serialPort.getOutputStream();
 		try {
+			System.out.println("Sent: " + message);
 			byte[] array = message.getBytes();
 			out.write(array);
 			out.flush();

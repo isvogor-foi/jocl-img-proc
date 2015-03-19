@@ -4,7 +4,14 @@ import static org.jocl.CL.CL_CONTEXT_PLATFORM;
 import static org.jocl.CL.CL_DEVICE_TYPE_ALL;
 import static org.jocl.CL.clCreateCommandQueue;
 import static org.jocl.CL.clCreateContext;
-import hr.foi.thor.filters.Sobel;
+import hr.foi.thor.filters.Hyst;
+
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import org.jocl.CL;
 import org.jocl.cl_command_queue;
@@ -20,6 +27,7 @@ public class Main
      * 
      * @param args not used
      */
+	@SuppressWarnings("unused")
 	public static void main (String args[]){	
 		// VARIABLES
 	
@@ -33,7 +41,6 @@ public class Main
 		CLEnvironment env = new CLEnvironment();
 
 		// IMPLEMENTATION	
-		
 		// 1. enable exceptions, omit errors
 		CL.setExceptionsEnabled(true);
 		// 2. get current platform
@@ -42,19 +49,47 @@ public class Main
 		contextProperties.addProperty(CL_CONTEXT_PLATFORM, platform);
 		// 4. get devices
 		devices = env.getAllDevices(deviceType, platform);
-		
 		// print device info
 		env.printDeviceInfo(devices, platform);
-		
 		// 5. create context for the device
 		cl_context ctx = clCreateContext(contextProperties, 1, new cl_device_id[]{devices[deviceIndex]}, null, null, null);
 		// 6. create command queue
 		commandQueue = clCreateCommandQueue(ctx, devices[deviceIndex], 0, null);
 		
 		// create memory - different each time (inside a class)
-		Sobel s = new Sobel();
-
+		BufferedImage inImage = createBufferedImage("cap2g.jpg");
+		
+		Hyst h = new Hyst(ctx, devices[0]);
+		
+		h.applyFilter(inImage);
+		
+		
+		
 	}
+	
+    
+    private static BufferedImage createBufferedImage(String fileName)
+    {
+        BufferedImage image = null;
+        try
+        {
+            image = ImageIO.read(new File(fileName));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        
+        int sizeX = image.getWidth();
+        int sizeY = image.getHeight();
+
+        BufferedImage result = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_RGB);
+        Graphics g = result.createGraphics();
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
+        return result;
+    }
 	
 }
 

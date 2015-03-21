@@ -38,9 +38,9 @@ import org.jocl.cl_kernel;
 import org.jocl.cl_mem;
 import org.jocl.cl_program;
 
-public class Sobel {
+public class Gauss {
 
-    private String KERNEL_SOURCE_FILE_NAME = "src/hr/foi/thor/kernels/sobel.cl";
+    private String KERNEL_SOURCE_FILE_NAME = "src/hr/foi/thor/kernels/gauss.cl";
 
     private cl_mem inputImageMem;
     private cl_mem outputImageMem;
@@ -50,7 +50,7 @@ public class Sobel {
     
     //private Kernel kernel;
     
-    public Sobel(cl_context context, cl_device_id device){
+    public Gauss(cl_context context, cl_device_id device){
     	this.context = context;
         cl_command_queue commandQueue = clCreateCommandQueue(context, device, 0, null);
     	JOCLConvolveOp(context, commandQueue); //, kernel);
@@ -63,7 +63,7 @@ public class Sobel {
     	BufferedImage outputImage1 = new BufferedImage(inputImage.getWidth(), inputImage.getHeight(), BufferedImage.TYPE_INT_RGB);
         outputImage1 = filter(inputImage, outputImage1);
         
-        File outputfile = new File("saved_s.png");
+        File outputfile = new File("saved_g.png");
         
         try {
 			ImageIO.write(outputImage1, "png", outputfile);
@@ -162,7 +162,7 @@ public class Sobel {
         String compileOptions = "-cl-mad-enable";
         
         clBuildProgram(program, 0, null, compileOptions, null, null);
-        clKernel = clCreateKernel(program, "sobel_filter", null);
+        clKernel = clCreateKernel(program, "gauss_filter", null);
         clReleaseProgram(program);
     }
     

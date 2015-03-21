@@ -4,7 +4,9 @@ import static org.jocl.CL.CL_CONTEXT_PLATFORM;
 import static org.jocl.CL.CL_DEVICE_TYPE_ALL;
 import static org.jocl.CL.clCreateCommandQueue;
 import static org.jocl.CL.clCreateContext;
+import hr.foi.thor.filters.Gauss;
 import hr.foi.thor.filters.Hyst;
+import hr.foi.thor.filters.Sobel;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -58,12 +60,16 @@ public class Main
 		
 		// create memory - different each time (inside a class)
 		BufferedImage inImage = createBufferedImage("cap2g.jpg");
+		//BufferedImage inImage = createBufferedImage("lena512color.png");
 		
-		Hyst h = new Hyst(ctx, devices[0]);
+		//Hyst h = new Hyst(ctx, devices[deviceIndex]);
+		//h.applyFilter(inImage);
 		
-		h.applyFilter(inImage);
+		//Sobel s = new Sobel(ctx, devices[deviceIndex]);
+		//s.applyFilter(inImage);
 		
-		
+		Gauss g = new Gauss(ctx, devices[deviceIndex]);
+		g.applyFilter(inImage);
 		
 	}
 	

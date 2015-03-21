@@ -51,11 +51,13 @@ __kernel void sobel_filter(__global uchar4* inputImage, __global uchar4* outputI
 		float4 i12 = convert_float4(inputImage[c + width]);
 		float4 i22 = convert_float4(inputImage[c + 1 + width]);
 
+		// 1 0 -1 , 2 0 -2, 1 0 -1
 		Gx =   i00 + (float4)(2) * i10 + i20 - i02  - (float4)(2) * i12 - i22;
-
+		// 1 2 1, 0 0 0, -1 -2 -1
 		Gy =   i00 - i20  + (float4)(2)*i01 - (float4)(2)*i21 + i02  -  i22;
 
 		/* taking root of sums of squares of Gx and Gy */
+		// hypotenuse
 		outputImage[c] = convert_uchar4(hypot(Gx, Gy)/(float4)(2));
 
 	}

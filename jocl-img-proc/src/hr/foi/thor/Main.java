@@ -4,6 +4,8 @@ import static org.jocl.CL.CL_CONTEXT_PLATFORM;
 import static org.jocl.CL.CL_DEVICE_TYPE_ALL;
 import static org.jocl.CL.clCreateCommandQueue;
 import static org.jocl.CL.clCreateContext;
+import hr.foi.thor.filters.Dilate;
+import hr.foi.thor.filters.Erode;
 import hr.foi.thor.filters.Gauss;
 import hr.foi.thor.filters.Hyst;
 import hr.foi.thor.filters.Sobel;
@@ -59,7 +61,8 @@ public class Main
 		commandQueue = clCreateCommandQueue(ctx, devices[deviceIndex], 0, null);
 		
 		// create memory - different each time (inside a class)
-		BufferedImage inImage = createBufferedImage("cap2g.jpg");
+		BufferedImage inImage = createBufferedImage("C:/Doc/Dev/java/temp/pic/cap2.jpg");
+		//
 		//BufferedImage inImage = createBufferedImage("lena512color.png");
 		
 		//Hyst h = new Hyst(ctx, devices[deviceIndex]);
@@ -68,8 +71,14 @@ public class Main
 		//Sobel s = new Sobel(ctx, devices[deviceIndex]);
 		//s.applyFilter(inImage);
 		
-		Gauss g = new Gauss(ctx, devices[deviceIndex]);
-		g.applyFilter(inImage);
+		//Gauss g = new Gauss(ctx, devices[deviceIndex]);
+		//g.applyFilter(inImage);
+		
+		Erode er = new Erode(ctx, devices[deviceIndex]);
+		er.applyFilter(inImage);
+		
+		//Dilate d = new Dilate(ctx, devices[deviceIndex]);
+		//d.applyFilter(inImage);
 		
 	}
 	

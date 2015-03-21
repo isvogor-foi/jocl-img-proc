@@ -33,6 +33,6 @@ __kernel void dilate(__global uchar4* inputImage, __global uchar4* outputImage)
 			maxVal = max(maxVal, a[i]); 
 		}
 		
-		outputImage[c] = maxVal;
+		outputImage[c] = convert_uchar4(maxVal);
 	}		
 }

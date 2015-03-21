@@ -74,11 +74,11 @@ public class Main
 		//Gauss g = new Gauss(ctx, devices[deviceIndex]);
 		//g.applyFilter(inImage);
 		
-		Erode er = new Erode(ctx, devices[deviceIndex]);
-		er.applyFilter(inImage);
+		//Erode er = new Erode(ctx, devices[deviceIndex]);
+		//er.applyFilter(inImage);
 		
-		//Dilate d = new Dilate(ctx, devices[deviceIndex]);
-		//d.applyFilter(inImage);
+		Dilate d = new Dilate(ctx, devices[deviceIndex]);
+		d.applyFilter(inImage);
 		
 	}
 	

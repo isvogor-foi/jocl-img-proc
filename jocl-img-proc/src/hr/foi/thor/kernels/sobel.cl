@@ -24,7 +24,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  */
 
 
-__kernel void sobel_filter(__global uchar4* inputImage, __global uchar4* outputImage)
+__kernel void sobel(__global uchar4* inputImage, __global uchar4* outputImage)
 {
 	uint x = get_global_id(0);
     uint y = get_global_id(1);

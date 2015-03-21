@@ -2,7 +2,7 @@
  Author: Ivan Svogor, FOI 
 ***********************************************************************/
 
-__kernel void gauss_filter(__global uchar4* inputImage, __global uchar4* outputImage)
+__kernel void gauss(__global uchar4* inputImage, __global uchar4* outputImage)
 {
 	uint x = get_global_id(0);
     uint y = get_global_id(1);

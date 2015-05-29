@@ -4,9 +4,11 @@ package hr.foi.thor.filters;
 import static org.jocl.CL.CL_MEM_READ_ONLY;
 import static org.jocl.CL.CL_MEM_USE_HOST_PTR;
 import static org.jocl.CL.CL_MEM_WRITE_ONLY;
+import static org.jocl.CL.CL_QUEUE_PROFILING_ENABLE;
 import static org.jocl.CL.CL_TRUE;
 import static org.jocl.CL.clBuildProgram;
 import static org.jocl.CL.clCreateBuffer;
+import static org.jocl.CL.clCreateCommandQueue;
 import static org.jocl.CL.clCreateKernel;
 import static org.jocl.CL.clCreateProgramWithSource;
 import static org.jocl.CL.clEnqueueNDRangeKernel;
@@ -16,7 +18,7 @@ import static org.jocl.CL.clReleaseContext;
 import static org.jocl.CL.clReleaseKernel;
 import static org.jocl.CL.clReleaseMemObject;
 import static org.jocl.CL.clReleaseProgram;
-import static org.jocl.CL.clCreateCommandQueue;
+import hr.foi.thor.ExecutionStatistics;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -26,11 +28,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.jocl.CL;
 import org.jocl.Pointer;
 import org.jocl.Sizeof;
 import org.jocl.cl_command_queue;
 import org.jocl.cl_context;
 import org.jocl.cl_device_id;
+import org.jocl.cl_event;
 import org.jocl.cl_kernel;
 import org.jocl.cl_mem;
 import org.jocl.cl_program;
@@ -64,7 +68,8 @@ public abstract class AbstractFilter implements FilterInterface{
     	KERNEL_SOURCE_FILE_NAME = kernelFileName;
     	KERNEL_FUNCTION_NAME = kernelName;
     	
-        cl_command_queue commandQueue = clCreateCommandQueue(context, device, 0, null);
+    	//enabled profiling...
+        cl_command_queue commandQueue = clCreateCommandQueue(context, device, CL_QUEUE_PROFILING_ENABLE, null);
     	JOCLConvolveOp(context, commandQueue); 
     }
     
@@ -73,8 +78,21 @@ public abstract class AbstractFilter implements FilterInterface{
      * @param dst
      */
 	public void applyKernel(BufferedImage dst) {
-		clEnqueueNDRangeKernel(commandQueue, clKernel, 2, null, globalWorkSize, localWorkSize, 0, null, null);
-        // Read the pixel data into the BufferedImage
+		
+        long submitTime[] = new long[1];
+        long queuedTime[] = new long[1];
+        long startTime[] = new long[1];
+        long endTime[] = new long[1];
+		
+		// execute the kernel
+		cl_event openclEvent = new cl_event();
+		CL.clFinish(commandQueue);
+		clEnqueueNDRangeKernel(commandQueue, clKernel, 2, null, globalWorkSize, localWorkSize, 0, null, openclEvent);
+		
+		System.out.println("Waiting for events...");
+        CL.clWaitForEvents(1, new cl_event[]{openclEvent});
+               
+		// Read the pixel data into the BufferedImage
         DataBufferInt dataBufferDst = (DataBufferInt)dst.getRaster().getDataBuffer();
         int dataDst[] = dataBufferDst.getData();
         clEnqueueReadBuffer(commandQueue, outputImageMem, CL_TRUE, 0, dataDst.length * Sizeof.cl_uint, Pointer.to(dataDst), 0, null, null);
@@ -82,6 +100,11 @@ public abstract class AbstractFilter implements FilterInterface{
         // Clean up
         clReleaseMemObject(inputImageMem);
         clReleaseMemObject(outputImageMem);
+        
+        ExecutionStatistics executionStatistics = new ExecutionStatistics();
+        executionStatistics.addEntry("Kernel 0", openclEvent);
+        executionStatistics.print();
+
 	}
 	
 	/**
@@ -219,6 +242,8 @@ public abstract class AbstractFilter implements FilterInterface{
         clReleaseCommandQueue(commandQueue);
         clReleaseContext(context);
     }
+    
+
 
 }
 

@@ -12,6 +12,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import hr.foi.thor.filters.Sge;
+import hr.foi.thor.filters.Sgedh;
 import hr.foi.thor.filters.Sobel;
 
 import org.jocl.CL;
@@ -28,10 +30,13 @@ public class InitializerS1
 	private int device;
 	private cl_context ctx;
 
-
 	public InitializerS1(int deviceIndex){	
-		// VARIABLES
 		this.device = deviceIndex;
+		initialize();
+	}
+
+	public void initialize(){	
+		// VARIABLES
 
 		final long deviceType = org.jocl.CL.CL_DEVICE_TYPE_ALL;
 		
@@ -65,13 +70,6 @@ public class InitializerS1
 		return devices;
 	}
 	
-	public void runSobelVga(BufferedImage inImage){
-		
-		Sobel s = new Sobel(ctx, devices[device]);
-		s.applyFilter(inImage);
-		
-	}
-	
     public BufferedImage createBufferedImage(String fileName)
     {
         BufferedImage image = null;
@@ -94,6 +92,27 @@ public class InitializerS1
         g.dispose();
         return result;
     }
+
+	public void runSVga(BufferedImage inImage){
+		Sobel filter = new Sobel(ctx, devices[device]);
+		filter.applyFilter(inImage);
+		
+	}
+    
+	public void runSgeVga(BufferedImage inImage) {
+		Sge filter = new Sge(ctx, devices[device]);
+		filter.applyFilter(inImage);		
+	}
+
+	public void runSgeSxga(BufferedImage inImage) {
+		Sgedh filter = new Sgedh(ctx, devices[device]);
+		filter.applyFilter(inImage);		
+	}
+
+	public void runSgedhSxga(BufferedImage inImage) {
+		Sobel filter = new Sobel(ctx, devices[device]);
+		filter.applyFilter(inImage);		
+	}
 	
     
 

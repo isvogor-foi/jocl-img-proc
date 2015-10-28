@@ -24,6 +24,7 @@ import org.jocl.cl_context_properties;
 import org.jocl.cl_device_id;
 import org.jocl.cl_platform_id;
 
+// INSTALL OPENCL ON YOUR SYSTEM
 public class Main
 {
     /**
@@ -36,7 +37,7 @@ public class Main
 		// VARIABLES
 	
 		final int deviceIndex = 0;
-		final long deviceType = CL_DEVICE_TYPE_ALL;
+		final long deviceType = org.jocl.CL.CL_DEVICE_TYPE_ALL;
 		
 		cl_command_queue commandQueue;
 		cl_device_id[] devices;
@@ -50,10 +51,12 @@ public class Main
 		// 2. get current platform
 		platform = env.getCurrentPlatform(env.getNumberOfPlatforms(), 0);
 		// 3. initialize the context
+		System.out.println("Platforms: " + env.getNumberOfPlatforms());
 		contextProperties.addProperty(CL_CONTEXT_PLATFORM, platform);
 		// 4. get devices
 		devices = env.getAllDevices(deviceType, platform);
 		// print device info
+		System.out.println("Devices: " + devices.length);
 		env.printDeviceInfo(devices, platform);
 		// 5. create context for the device
 		cl_context ctx = clCreateContext(contextProperties, 1, new cl_device_id[]{devices[deviceIndex]}, null, null, null);
@@ -61,12 +64,12 @@ public class Main
 		commandQueue = clCreateCommandQueue(ctx, devices[deviceIndex], 0, null);
 		
 		// create memory - different each time (inside a class)
-		BufferedImage inImage = createBufferedImage("C:/Doc/Dev/java/temp/pic/cap2.jpg");
+		BufferedImage inImage = createBufferedImage("/home/ivan/Dev/java/temp/cap2g.jpg");
 		//
 		//BufferedImage inImage = createBufferedImage("lena512color.png");
 		
-		//Hyst h = new Hyst(ctx, devices[deviceIndex]);
-		//h.applyFilter(inImage);
+		Hyst h = new Hyst(ctx, devices[deviceIndex]);
+		h.applyFilter(inImage);
 		
 		//Sobel s = new Sobel(ctx, devices[deviceIndex]);
 		//s.applyFilter(inImage);
@@ -77,8 +80,8 @@ public class Main
 		//Erode er = new Erode(ctx, devices[deviceIndex]);
 		//er.applyFilter(inImage);
 		
-		Dilate d = new Dilate(ctx, devices[deviceIndex]);
-		d.applyFilter(inImage);
+		//Dilate d = new Dilate(ctx, devices[deviceIndex]);
+		//d.applyFilter(inImage);
 		
 	}
 	

@@ -25,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Properties;
 
 import org.jocl.Pointer;
 import org.jocl.Sizeof;
@@ -37,6 +38,8 @@ import org.jocl.cl_program;
 
 public abstract class AbstractFilter implements FilterInterface{
 
+	
+	public String ROOT = "/home/ivan/git/jocl-img-proc/jocl-img-proc";
     public String KERNEL_SOURCE_FILE_NAME;
     public String KERNEL_FUNCTION_NAME;
 
@@ -186,9 +189,9 @@ public abstract class AbstractFilter implements FilterInterface{
     public String readFile(String fileName)
     {
         try
-        {
+        {           
             @SuppressWarnings("resource")
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(ROOT + "/" + fileName)));
             StringBuffer sb = new StringBuffer();
             String line = null;
             while (true)

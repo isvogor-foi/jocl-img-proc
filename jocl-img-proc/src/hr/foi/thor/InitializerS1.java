@@ -13,6 +13,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import hr.foi.thor.filters.Sge;
+import hr.foi.thor.filters.Sged;
 import hr.foi.thor.filters.Sgedh;
 import hr.foi.thor.filters.Sobel;
 
@@ -111,6 +112,11 @@ public class InitializerS1
 
 	public void runSgedhSxga(BufferedImage inImage) {
 		Sobel filter = new Sobel(ctx, devices[device]);
+		filter.applyFilter(inImage);		
+	}
+	
+	public void runSgedFhd(BufferedImage inImage) {
+		Sged filter = new Sged(ctx, devices[device]);
 		filter.applyFilter(inImage);		
 	}
 	

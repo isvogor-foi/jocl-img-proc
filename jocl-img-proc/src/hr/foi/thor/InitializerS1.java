@@ -12,6 +12,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import hr.foi.thor.filters.Gauss;
+import hr.foi.thor.filters.Sg;
 import hr.foi.thor.filters.Sge;
 import hr.foi.thor.filters.Sged;
 import hr.foi.thor.filters.Sgedh;
@@ -58,7 +60,7 @@ public class InitializerS1
 		devices = env.getAllDevices(deviceType, platform);
 		// print device info
 		System.out.println("Devices: " + devices.length);
-		env.printDeviceInfo(devices, platform);
+		env.printDeviceName(devices[this.device], platform);
 		// 5. create context for the device
 		ctx = clCreateContext(contextProperties, 1, new cl_device_id[]{devices[device]}, null, null, null);
 		// 6. create command queue
@@ -94,33 +96,35 @@ public class InitializerS1
         return result;
     }
 
-	public void runSVga(BufferedImage inImage){
+	public void runS(BufferedImage inImage){
 		Sobel filter = new Sobel(ctx, devices[device]);
 		filter.applyFilter(inImage);
-		
+	}
+	
+	public void runG(BufferedImage inImage){
+		Gauss filter = new Gauss(ctx, devices[device]);
+		filter.applyFilter(inImage);
 	}
     
-	public void runSgeVga(BufferedImage inImage) {
+	public void runSge(BufferedImage inImage) {
 		Sge filter = new Sge(ctx, devices[device]);
 		filter.applyFilter(inImage);		
 	}
 
-	public void runSgeSxga(BufferedImage inImage) {
+	public void runSgedh(BufferedImage inImage) {
 		Sgedh filter = new Sgedh(ctx, devices[device]);
 		filter.applyFilter(inImage);		
 	}
-
-	public void runSgedhSxga(BufferedImage inImage) {
-		Sobel filter = new Sobel(ctx, devices[device]);
-		filter.applyFilter(inImage);		
-	}
 	
-	public void runSgedFhd(BufferedImage inImage) {
+	public void runSged(BufferedImage inImage) {
 		Sged filter = new Sged(ctx, devices[device]);
 		filter.applyFilter(inImage);		
 	}
 	
-    
+	public void runSg(BufferedImage inImage) {
+		Sg filter = new Sg(ctx, devices[device]);
+		filter.applyFilter(inImage);		
+	}
 
 	
 }

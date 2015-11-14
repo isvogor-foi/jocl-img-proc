@@ -24,6 +24,10 @@ public class CLEnvironment {
 			System.out.println("Device name:" + getString(current, CL_DEVICE_NAME));
 		}
 	}
+	
+	public void printDeviceName(cl_device_id device, cl_platform_id platform){
+		System.out.println("Device name:" + getString(device, CL_DEVICE_NAME));
+	}
 
 	/**
 	 * Get device by id

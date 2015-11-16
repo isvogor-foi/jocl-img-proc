@@ -27,13 +27,13 @@ import org.jocl.cl_device_id;
 import org.jocl.cl_platform_id;
 
 // INSTALL OPENCL ON YOUR SYSTEM
-public class InitializerS1
+public class Initializer
 {
 	private cl_device_id[] devices;
 	private int device;
 	private cl_context ctx;
 
-	public InitializerS1(int deviceIndex){	
+	public Initializer(int deviceIndex){	
 		this.device = deviceIndex;
 		initialize();
 	}
